@@ -1022,7 +1022,7 @@ no_zeros = fn diffs ->
 end
 
 small_differences = fn diffs ->
-  diffs |> Enum.filter(fn x -> abs(x) > 3 end) |> Enum.empty?()
+  diffs |> Enum.filter(&(abs(&1) > 3)) |> Enum.empty?()
 end
 
 is_safe = fn report ->
@@ -1042,7 +1042,7 @@ is_unsafe = fn report ->
 end
 
 parse = fn input ->
-  input |> Enum.map(fn x -> String.split(x) |> Enum.map(fn y -> String.to_integer(y) end) end)
+  input |> Enum.map(fn x -> String.split(x) |> Enum.map(&String.to_integer(&1)) end)
 end
 
 part_one =
@@ -1060,7 +1060,7 @@ end
 check_variations = fn unsafe ->
   unsafe
   |> variations.()
-  |> Enum.filter(fn x -> is_safe.(x) end)
+  |> Enum.filter(&is_safe.(&1))
   |> length() > 0
 end
 
@@ -1068,7 +1068,7 @@ part_two =
   input
   |> parse.()
   |> Enum.filter(is_unsafe)
-  |> Enum.filter(fn x -> check_variations.(x) end)
+  |> Enum.filter(&check_variations.(&1))
   |> length()
 
 IO.inspect(part_one + part_two, label: "Part Two")
