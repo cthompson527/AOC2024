@@ -1037,12 +1037,38 @@ is_safe = fn report ->
   same && small && no_zeros
 end
 
+is_unsafe = fn report ->
+  not is_safe.(report)
+end
+
 parse = fn input ->
   input |> Enum.map(fn x -> String.split(x) |> Enum.map(fn y -> String.to_integer(y) end) end)
 end
 
-input
-|> parse.()
-|> Enum.filter(is_safe)
-|> length()
-|> IO.inspect(label: "Part One")
+part_one =
+  input
+  |> parse.()
+  |> Enum.filter(is_safe)
+  |> length()
+
+IO.inspect(part_one, label: "Part One")
+
+variations = fn report ->
+  report |> Enum.with_index() |> Enum.map(fn {_, idx} -> List.delete_at(report, idx) end)
+end
+
+check_variations = fn unsafe ->
+  unsafe
+  |> variations.()
+  |> Enum.filter(fn x -> is_safe.(x) end)
+  |> length() > 0
+end
+
+part_two =
+  input
+  |> parse.()
+  |> Enum.filter(is_unsafe)
+  |> Enum.filter(fn x -> check_variations.(x) end)
+  |> length()
+
+IO.inspect(part_one + part_two, label: "Part Two")
